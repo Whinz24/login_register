@@ -7,19 +7,15 @@ function create() {
             var username = $('#username').val();
             var password = $('#password').val();
             var role     = $('#role').val();
-    
             $.ajax({
                 type: 'POST',
                 url : url,
                 data : {
-                    action : 'register',
-                    username : username,
-                    password : password,
-                    role : role
+                    action : 'register', username : username, password : password, role : role
                 },
                 dataType: 'json',
                 success: function(response){
-                    response.success == true ? success(response.bgcolor,response.color,response.message) : validate(response.bgcolor,response.color,response.message);
+                    response.success == true ? notify(response.bgcolor,response.color,response.message) : notify(response.bgcolor,response.color,response.message);
                 }
             })
         });
@@ -35,55 +31,19 @@ function login() {
             $.ajax({
                 type: 'POST',
                 url : url,
-                data: {
-                    action : 'login',
-                    username : username,
-                    password : password
-                },
+                data: { action : 'login', username : username, password : password },
                 dataType: 'json',
                 success:function(response) {
-                    response.success == true ? success(response.bgcolor,response.color,response.message) : invalid(response.bgcolor,response.color,response.message);
+                    response.success == true ? notify(response.bgcolor,response.color,response.message) : notify(response.bgcolor,response.color,response.message);
                 }
             });
         });
     });
 }
 
-function success(bgcolor,color,message) {
+function notify(bgcolor,color,message) {
     $.amaran({
-        'theme'     :'colorful',
-        'content'   :{
-        bgcolor: bgcolor,
-        color: color,
-        message: message
-        },
-        'position'  :'top right',
-        'outEffect' :'slideBottom'
-    });
-}
-
-function validate(bgcolor,color,message) {
-    $.amaran({
-        'theme'     :'colorful',
-        'content'   :{
-        bgcolor: bgcolor,
-        color: color,
-        message: message
-        },
-        'position'  :'top right',
-        'outEffect' :'slideBottom'
-    });
-}
-
-function invalid(bgcolor,color,message) {
-    $.amaran({
-        'theme'     :'colorful',
-        'content'   :{
-        bgcolor: bgcolor,
-        color: color,
-        message: message
-        },
-        'position'  :'top right',
-        'outEffect' :'slideBottom'
+        'theme'     : 'colorful', 'content'   : { bgcolor: bgcolor,color: color,message: message },
+        'position'  : 'top right', 'outEffect' : 'slideBottom'
     });
 }

@@ -12,22 +12,12 @@ switch($_POST['action']) {
     $query = $db->query("SELECT * FROM account_tbl WHERE username = '$username'");
     $check = $query->num_rows;
     if($check > 0) {
-        echo json_encode(array(
-            'success' => false,
-            'bgcolor' => '#ff0000',
-            'color:'  => '#fff',
-            'message' => 'Username is already exist'
-        ));
+        notify($success = false, $bgcolor = '#ff0000',$color = '#fff', $message = 'Username is already exist');
     } else {
         $query = $db->query("INSERT INTO account_tbl
         (username,password,role) VALUES ('$username','$password','$role')");
         if($query) {
-            echo json_encode(array(
-                'success' => false,
-                'bgcolor' => '#336699',
-                'color:'  => '#fff',
-                'message' => 'You are successfully registered.'
-            ));
+            notify($success = true, $bgcolor = '#336699',$color = '#fff', $message = 'You are successfully registered');
         }
     }
     break;
@@ -41,38 +31,17 @@ switch($_POST['action']) {
         $row = $query->fetch_object();
         $role = $row->role;
         $hash = $row->password;
-        if(verify($password,$hash) && $role == 0) {
-            echo json_encode(array(
-                'success' => true,
-                'bgcolor' => '#336699',
-                'color'   => '#fff',
-                'message' => 'You are logged in as administrator'
-            ));
-        } elseif(verify($password,$hash) && $role == 1) {
-            echo json_encode(array(
-                'success' => true,
-                'bgcolor' => '#336699',
-                'color'   => '#fff',
-                'message' => 'You are logged in as member'
-            ));
+        $verify = verify($password,$hash);
+        if($verify && $role == 0) {
+            notify($success = true, $bgcolor = '#336699',$color = '#fff', $message = 'You are logged in as administrator');
+        } elseif($verify && $role == 1) {
+            notify($success = true, $bgcolor = '#336699',$color = '#fff', $message = 'You are logged in as member');
         } else {
-            echo json_encode(array(
-                'success' => true,
-                'bgcolor' => '#ff0000',
-                'color'   => '#fff',
-                'message' => 'Invalid username or password'
-            ));
+            notify($success = false, $bgcolor = '#ff0000',$color = '#fff', $message = 'Invalid username or password');
         }
-
     } else{
-        echo json_encode(array(
-            'success' => true,
-            'bgcolor' => '#ff0000',
-            'color'   => '#fff',
-            'message' => 'Invalid username or password'
-        ));
+        notify($success = false, $bgcolor = '#ff0000',$color = '#fff', $message = 'Invalid username or password');
     }
-
     break;
     
 
@@ -80,4 +49,8 @@ switch($_POST['action']) {
 
 function verify($password,$hash) {
     return password_verify($password,$hash);
+}
+
+function notify($success,$bgcolor,$color,$message) {
+    echo json_encode(array('success' => $success,'bgcolor' => $bgcolor,'color'   => $color,'message' => $message));
 }
